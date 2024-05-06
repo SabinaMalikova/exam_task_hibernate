@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+
 public class Department {
     @Id
     @GeneratedValue(generator = "department_gen", strategy = GenerationType.SEQUENCE)
@@ -18,7 +18,21 @@ public class Department {
     private Long id;
     private String departmentName;
     private int maxEmployeeNumber;
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department",fetch=FetchType.EAGER,cascade = CascadeType.DETACH)
     private List<Employee> employees;
 
+    public Department(String departmentName, int maxEmployeeNumber) {
+        this.departmentName = departmentName;
+        this.maxEmployeeNumber = maxEmployeeNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "\nDepartment{" +
+                "id=" + id +
+                ", departmentName='" + departmentName + '\'' +
+                ", maxEmployeeNumber=" + maxEmployeeNumber +
+                ", employees=" + employees +
+                '}';
+    }
 }

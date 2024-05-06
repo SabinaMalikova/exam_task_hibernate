@@ -12,8 +12,7 @@ public interface DepartmentDao {
     List<Department> getAllDepartments();
     String updateDepartment (Long oldDepartmentId, Department newDepartment);
 
-
-    Department getDepartmentByMaxEmployees();
+    String deleteDepartment(Long id);
 
 
 

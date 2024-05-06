@@ -3,13 +3,16 @@ package peaksoft.dao.daoImpl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.HibernateException;
-import peaksoft.HibernateConfig;
+import peaksoft.config.HibernateConfig;
 import peaksoft.dao.DepartmentDao;
 import peaksoft.entity.Department;
+import peaksoft.entity.Employee;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static java.nio.file.Files.find;
 
 public class DepartmentDaoImpl implements DepartmentDao {
     private final EntityManagerFactory entityManagerFactory = HibernateConfig.getEntityManagerFactory();
@@ -82,8 +85,22 @@ public class DepartmentDaoImpl implements DepartmentDao {
     }
 
     @Override
-    public Department getDepartmentByMaxEmployees() {
-
-        return null;
+    public String deleteDepartment(Long id) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try{
+            entityManager.getTransaction().begin();
+            Department department = entityManager.find(Department.class, id);
+            for (Employee employee : department.getEmployees()) {
+                employee.setDepartment(null);
+            }
+            department.setEmployees(null);
+            entityManager.remove(department);
+            entityManager.getTransaction().commit();
+        }catch (HibernateException e){
+            return e.getMessage();
+        }finally {
+            entityManager.close();
+        }
+        return "successfully deleted";
     }
 }

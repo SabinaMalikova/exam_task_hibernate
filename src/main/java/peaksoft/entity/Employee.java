@@ -4,12 +4,12 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "Departments")
+@Table(name = "Employee")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+
 public class Employee {
     @Id
     @GeneratedValue(generator = "employee_gen", strategy = GenerationType.SEQUENCE)
@@ -19,8 +19,25 @@ public class Employee {
     private String lastName;
     private int age;
     private double salary;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH,fetch=FetchType.EAGER)
     private Department department;
 
+    public Employee(String firstName, String lastName, int age, double salary) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.salary = salary;
+    }
 
+    @Override
+    public String toString() {
+        return "\nEmployee{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                ", salary=" + salary +
+                ", department=" + department +
+                '}';
+    }
 }

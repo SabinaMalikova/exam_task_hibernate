@@ -3,9 +3,9 @@ package peaksoft.dao.daoImpl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.HibernateException;
-import org.w3c.dom.html.HTMLObjectElement;
-import peaksoft.HibernateConfig;
+import peaksoft.config.HibernateConfig;
 import peaksoft.dao.EmployeeDao;
+import peaksoft.entity.Department;
 import peaksoft.entity.Employee;
 
 import java.util.ArrayList;
@@ -99,5 +99,42 @@ public class EmployeeDaoImpl implements EmployeeDao {
             entityManager.close();
         }
         return employees;
+    }
+
+    @Override
+    public String assignEmployeeToDepartment(Long employeeId, Long departmentId) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try{
+            entityManager.getTransaction().begin();
+            Employee employee = entityManager.find(Employee.class, employeeId);
+            Department department = entityManager.find(Department.class, departmentId);
+            employee.setDepartment(department);
+            department.getEmployees().add(employee);
+            entityManager.getTransaction().commit();
+        }catch (HibernateException e){
+            return e.getMessage();
+        }
+        finally {
+            entityManager.close();
+        }
+        return "successfully assigned";
+    }
+
+    @Override
+    public String deleteEmployee(Long id) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try{
+            entityManager.getTransaction().begin();
+            Employee employee = entityManager.find(Employee.class, id);
+            employee.setDepartment(null);
+            entityManager.remove(employee);
+            entityManager.getTransaction().commit();
+        }catch (HibernateException e){
+            return e.getMessage();
+        }
+        finally {
+            entityManager.close();
+        }
+        return "successfully deleted";
     }
 }

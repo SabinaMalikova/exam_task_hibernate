@@ -14,4 +14,7 @@ public interface EmployeeDao {
 
     List<Employee> getAllEmployeesSortedBySalary();
 
+    String assignEmployeeToDepartment(Long employeeId, Long departmentId);
+    String deleteEmployee(Long id);
+
 }
